@@ -18,6 +18,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"text/template"
 
 	"github.com/google/uuid"
@@ -77,6 +78,8 @@ func main() {
 	target := flag.String("target", "", "target service to redirect connections to")
 	flag.Parse()
 	yaml, _ := k8SConfig(*name, *listenPort, *target)
-	fileString := *name + "-" + uuid.New().String()[:5] + ".yaml"
+	fileString := "/tmp/" + *name + "-" + uuid.New().String()[:5] + ".yaml"
 	os.WriteFile(fileString, yaml, 0600)
+	cmd := exec.Command("kubectl", "apply", "-f", fileString)
+	cmd.Run()
 }
