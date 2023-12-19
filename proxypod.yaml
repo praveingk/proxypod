@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxypod
+  labels:
+    app: proxypod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxypod
+  template:
+    metadata:
+      labels:
+        app: proxypod
+    spec:
+      containers:
+        - name: proxypod
+          image: praveingk/proxypod:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - >-
+                /usr/local/bin/proxypod  --port 5000 \
+                          --target iperf3-server:5000 &&
+                sleep infinity
